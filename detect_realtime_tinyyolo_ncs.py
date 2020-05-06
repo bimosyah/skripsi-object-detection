@@ -69,11 +69,18 @@ print("[INFO] loading model to the plugin...")
 execNet = plugin.load(network=net, num_requests=1)
 fps = FPS().start()
 
-mobil = 0
-bis = 0
-motor = 0
-orang = 0
+car = 0
+bicycle = 0
+motorbike = 0
+person = 0
 start = time.time()
+
+#garis
+start_point = (70, 0) 
+end_point = (70, 500) 
+color = (0, 255, 0) 
+thickness = 4
+
 
 # loop over the frames from the video stream
 while True:
@@ -90,6 +97,7 @@ while True:
     # resize original frame to have a maximum width of 500 pixel and
     # input_frame to network size
     orig = imutils.resize(orig, width=500)
+    orig = cv2.line(orig, start_point, end_point, color, thickness) 
     frame = cv2.resize(orig, (w, h))
 
     # change data layout from HxWxC to CxHxW
@@ -162,10 +170,14 @@ while True:
         cv2.putText(orig, label, (obj["xmin"], y),
             cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[obj["class_id"]], 3)
         
-        if obj["class_id"] == 0:
-            orang = orang + 1
-        elif obj["class_id"] == 2:
-            mobil = mobil + 1
+        if obj["xmin"] < 50 and obj["class_id"] == 0:
+            person = person + 1
+        #elif obj["class_id"] == 1:
+        #    bicycle = bicycle + 1
+        #elif obj["class_id"] == 2:
+        #    car = car + 1
+        #elif obj["class_id"] == 3:
+         #   motorbike = motorbike + 1
         
     # display the current frame to the screen and record if a user
     # presses a key
@@ -174,9 +186,12 @@ while True:
     
     if time.time() - start > 3:
         start = time.time()
-        urllib.request.urlopen("http://192.168.1.2/skripsi2/api/data/insert_jumlah/" + str(orang))
-        print("deteksi %s orang" % orang)
-        orang = 0
+        #urllib.request.urlopen("http://192.168.1.2/skripsi2/api/data/insert_data/" + str(person) + "/" + str(bicycle) + "/" + str(car) + "/" + str(motorbike))
+        print("deteksi %s person, %s bicycle, %s car, %s motorbike" % (person,bicycle,car,motorbike))
+        person = 0
+        bicycle = 0
+        car = 0
+        motorbike = 0
 
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
@@ -189,8 +204,6 @@ while True:
 fps.stop()
 print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
 print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-print("[JUMLAH] ORANG = %s" % orang)
-print("[JUMLAH] MOBIL = %s" % mobil)
 
 # stop the video stream and close any open windows1
 vs.stop() if args["input"] is None else vs.release()
