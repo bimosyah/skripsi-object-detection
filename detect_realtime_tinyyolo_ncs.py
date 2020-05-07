@@ -170,14 +170,14 @@ while True:
         cv2.putText(orig, label, (obj["xmin"], y),
             cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[obj["class_id"]], 3)
         
-        if obj["xmin"] < 50 and obj["class_id"] == 0:
+        if obj["xmin"] < 70 and obj["class_id"] == 0:
             person = person + 1
-        #elif obj["class_id"] == 1:
-        #    bicycle = bicycle + 1
-        #elif obj["class_id"] == 2:
-        #    car = car + 1
-        #elif obj["class_id"] == 3:
-         #   motorbike = motorbike + 1
+        elif obj["xmin"] < 70 and obj["class_id"] == 1:
+            bicycle = bicycle + 1
+        elif obj["xmin"] < 70 and obj["class_id"] == 2:
+            car = car + 1
+        elif obj["xmin"] < 70 and obj["class_id"] == 3:
+            motorbike = motorbike + 1
         
     # display the current frame to the screen and record if a user
     # presses a key
